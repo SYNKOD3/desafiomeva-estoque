@@ -1,7 +1,7 @@
 package br.com.portfolio.desafiomeva.model;
 
-public abstract class Produto {
-    private final String nome;
+public abstract class Produto { //modificador "abstract" indica a necessidade de implementação!
+    private final String nome; // modificador "final" impede que os valores fixos sejam alterados!
     private final String codigo;
     private final double preco;
     private int quantidadeEstoque;

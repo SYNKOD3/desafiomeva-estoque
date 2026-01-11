@@ -5,6 +5,7 @@ import br.com.portfolio.desafiomeva.model.Perfume;
 import br.com.portfolio.desafiomeva.model.Produto;
 import br.com.portfolio.desafiomeva.service.Estoque;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class MenuEstoque {
@@ -34,9 +35,7 @@ public class MenuEstoque {
                     ---------------------------------
                     """);
 
-            System.out.print("Escolha uma opção: ");
-            opcao = input.nextInt();
-            input.nextLine(); // Limpar o buffer do teclado
+            opcao = lerInt("Escolha uma opção: ");
 
             switch (opcao) {
                 case 1 -> adicionarProduto();
@@ -63,14 +62,49 @@ public class MenuEstoque {
     }
 
     // MÉTODOS DO MENU
+
+    // Metodo para tratar erros e exceções (int)
+    private int lerInt(String mensagem) {
+        while (true) {
+            try {
+                System.out.print(mensagem);
+                int valor = input.nextInt();
+                input.nextLine(); // limpa o buffer
+                return valor;
+            } catch (InputMismatchException e) {
+                System.out.println("❌ Entrada inválida! Digite apenas números.");
+                input.nextLine(); // descarta entrada inválida
+            }
+        }
+    }
+
+    // Metodo para tratar erros e exceções (double)
+    private double lerDouble() {
+        while (true) {
+            try {
+                System.out.print("Preço: ");
+                double valor = input.nextDouble();
+                input.nextLine();// limpa o buffer
+                return valor;
+            } catch (InputMismatchException e) {
+                System.out.println("❌ Digite um valor válido (use vírgula para separar os centavos).");
+                input.nextLine(); // descarta entrada inválida
+            }
+        }
+    }
+
     private void adicionarProduto() {
 
         System.out.println("Tipo de produto:");
         System.out.println("1 - Celular");
         System.out.println("2 - Perfume");
-        System.out.print("Escolha: ");
-        int tipo = input.nextInt();
-        input.nextLine();
+
+        int tipo = lerInt("Escolha: ");
+
+        if (tipo != 1 && tipo != 2) {
+            System.out.println("❌ Opção inválida! Digite 1 ou 2.");
+            return;
+        }
 
         System.out.print("Nome: ");
         String nome = input.nextLine();
@@ -78,12 +112,10 @@ public class MenuEstoque {
         System.out.print("Código: ");
         String codigo = input.nextLine();
 
-        System.out.print("Preço: ");
-        double preco = input.nextDouble();
+        double preco = lerDouble();
 
-        System.out.print("Quantidade em estoque: ");
-        int quantidade = input.nextInt();
-        input.nextLine();
+        int quantidade = lerInt("Quantidade em estoque: ");
+
 
         if (tipo == 1) {
             System.out.print("Modelo: ");
@@ -92,29 +124,24 @@ public class MenuEstoque {
             System.out.print("Fabricante: ");
             String fabricante = input.nextLine();
 
-            System.out.print("Armazenamento (GB): ");
-            int armazenamento = input.nextInt();
+            int armazenamento = lerInt("Armazenamento (GB): ");
 
             Produto celular = new Celular(nome, codigo, preco, quantidade, modelo, fabricante, armazenamento);
 
             estoque.adicionarProduto(celular);
 
-        } else if (tipo == 2) {
+        } else {
             System.out.print("Marca: ");
             String marca = input.nextLine();
 
             System.out.print("Família olfativa: ");
             String familia = input.nextLine();
 
-            System.out.print("Tamanho (ml): ");
-            int tamanho = input.nextInt();
+            int tamanho = lerInt("Tamanho (ml): ");
 
             Produto perfume = new Perfume(nome, codigo, preco, quantidade, marca, familia, tamanho);
 
             estoque.adicionarProduto(perfume);
-        } else {
-            System.out.println("Tipo inválido.");
-            return;
         }
 
         System.out.println("Produto adicionado com sucesso.");
@@ -125,20 +152,23 @@ public class MenuEstoque {
         System.out.println("O que deseja cadastrar?");
         System.out.println("1 - Entrada de estoque");
         System.out.println("2 - Saída de estoque");
-        System.out.print("Escolha: ");
-        int tipo = input.nextInt();
-        input.nextLine();
+        int tipo = lerInt("Escolha: ");
+
+        if (tipo != 1 && tipo != 2) {
+            System.out.println("❌ Opção inválida! Digite 1 ou 2.");
+            return;
+        }
 
         System.out.print("Código do produto: ");
         String codigo = input.nextLine();
 
+        int quantidade;
+
         if (tipo == 1) {
-            System.out.print("Quantidade de entrada: ");
+            quantidade = lerInt("Quantidade de entrada: ");
         } else {
-            System.out.print("Quantidade de saída: ");
+            quantidade = lerInt("Quantidade de saída: ");
         }
-        int quantidade = input.nextInt();
-        input.nextLine();
 
         boolean atualizado;
         boolean adicionar;
